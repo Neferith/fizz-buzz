@@ -10,7 +10,7 @@ class ResultViewModel : ViewModel() {
     var meta:FizzbuzzMeta = FizzBuzzUtils.defaultFitBuzz()
 
     /**
-     * Method to initialize the paramerters, of the view model
+     * Method to initialize the parameters, of the view model
      */
     fun init(parcelable: FizzbuzzMeta?) {
 

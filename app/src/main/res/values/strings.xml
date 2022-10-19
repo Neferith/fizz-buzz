@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">FIZZ BUZZ</string>
+    <string name="int1">Int1</string>
+    <string name="int2">Int2</string>
+    <string name="limit">Limit</string>
+    <string name="str1">str1</string>
+    <string name="str2">str2</string>
+    <string name="submit">submit</string>
+    <string name="result">Result</string>
+
+
 </resources>

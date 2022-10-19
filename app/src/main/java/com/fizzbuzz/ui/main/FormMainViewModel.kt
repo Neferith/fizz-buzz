@@ -3,7 +3,6 @@ package com.fizzbuzz.ui.main
 import androidx.lifecycle.ViewModel
 import com.fizzbuzz.model.FizzbuzzMeta
 import com.fizzbuzz.model.FormException
-import java.lang.Exception
 
 
 class FormMainViewModel : ViewModel() {
@@ -22,8 +21,6 @@ class FormMainViewModel : ViewModel() {
         } catch (e:NumberFormatException) {
             throw FormException("Le champ n'est pas valide")
         }
-
-
     }
 
     fun updateInt2(toString: String) {

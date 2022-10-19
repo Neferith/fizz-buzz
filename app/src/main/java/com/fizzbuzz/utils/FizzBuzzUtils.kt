@@ -32,6 +32,6 @@ object FizzBuzzUtils {
         if (index % item.int2 == 0) {
             str += item.str2
         }
-        return if(str.isEmpty()) index.toString() else str
+        return str.ifEmpty { index.toString() }
     }
 }

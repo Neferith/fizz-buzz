@@ -11,7 +11,7 @@ class ResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
         if (savedInstanceState == null) {
-            // Intialize fragment with fizzbuzz meta.
+            // Initialize fragment with fizzbuzz meta.
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.container,

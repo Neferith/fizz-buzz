@@ -11,3 +11,4 @@
 * Typically the GUI which is very basic. 
 * In particular the validation of the form. 
 * The functions of the application should be explained. Currently this is not the case
+* Check the app on other device (Tablet)

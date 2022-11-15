@@ -10,9 +10,10 @@ import kotlinx.android.parcel.Parcelize
  * The Parcelable implementation is used to pass the instance of a class as a parameter of an intent.
  */
 @Parcelize
-data class FizzbuzzMeta(
+data class FizzbuzzEntity(
     var int1: Int,
     var int2: Int,
     var limit: Int,
     var str1: String,
-    var str2: String) : Parcelable
+    var str2: String
+) : Parcelable

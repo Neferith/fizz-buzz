@@ -11,11 +11,11 @@ class ResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
         if (savedInstanceState == null) {
-            // Initialize fragment with fizzbuzz meta.
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.container,
-                    ResultFragment.newInstance(intent.getParcelableExtra("meta")))
+                    ResultFragment.newInstance(intent.getParcelableExtra("entity"))
+                )
                 .commitNow()
         }
     }

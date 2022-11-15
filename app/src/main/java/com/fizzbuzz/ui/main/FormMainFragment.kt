@@ -32,7 +32,7 @@ class FormMainFragment : Fragment() {
     private fun goToResultActivity() {
         activity.let {
             val intent = Intent(it, ResultActivity::class.java)
-            intent.putExtra("meta", viewModel.getCurrentItem())
+            intent.putExtra("entity", viewModel.getCurrentItem())
             it?.startActivity(intent)
         }
     }
@@ -49,11 +49,17 @@ class FormMainFragment : Fragment() {
         viewModel = ViewModelProvider(this)[FormMainViewModel::class.java]
     }
 
+    private data class InputValidate(
+        val isValidate: Boolean,
+        val message: String?,
+        val exception: FormException?
+    )
+
     private fun configureInput(
         inView: View,
         id: Int,
         defaultValue: String,
-        onChange: (value: String) -> FormException?
+        onChange: (value: String) -> InputValidate
     ) {
 
         val layout = inView.findViewById<TextInputLayout>(id)
@@ -61,15 +67,15 @@ class FormMainFragment : Fragment() {
         int1View?.setText(defaultValue)
 
         int1View?.doOnTextChanged { text, _, _, _ ->
-            val exception = onChange(text.toString())
-            submitError(layout, exception)
+            val result = onChange(text.toString())
+            processInputValidation(layout, result)
         }
 
     }
 
-    private fun submitError(layout: TextInputLayout, exception: FormException?) {
-        if (exception != null) {
-            layout.error = exception.message
+    private fun processInputValidation(layout: TextInputLayout, result: InputValidate) {
+        if (!result.isValidate) {
+            layout.error = result.message
             submitButton.visibility = View.GONE
         } else {
             layout.error = null
@@ -88,9 +94,9 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateInt1(it)
             } catch (e: FormException) {
-                return@configureInput e
+                return@configureInput InputValidate(false, e.message, e)
             }
-            return@configureInput null
+            return@configureInput InputValidate(true, null, null)
         }
 
         configureInput(
@@ -101,9 +107,9 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateInt2(it)
             } catch (e: FormException) {
-                return@configureInput e
+                return@configureInput InputValidate(false, e.message, e)
             }
-            return@configureInput null
+            return@configureInput InputValidate(true, null, null)
         }
 
         configureInput(
@@ -114,9 +120,9 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateLimit(it)
             } catch (e: FormException) {
-                return@configureInput e
+                return@configureInput InputValidate(false, e.message, e)
             }
-            return@configureInput null
+            return@configureInput InputValidate(true, null, null)
         }
 
         configureInput(
@@ -127,7 +133,7 @@ class FormMainFragment : Fragment() {
 
             viewModel.updateStr1(it)
 
-            return@configureInput null
+            return@configureInput InputValidate(true, null, null)
         }
 
         configureInput(
@@ -138,12 +144,10 @@ class FormMainFragment : Fragment() {
 
             viewModel.updateStr2(it)
 
-            return@configureInput null
+            return@configureInput InputValidate(true, null, null)
         }
-
         submitButton = inView.findViewById(R.id.submit)
         submitButton.setOnClickListener { goToResultActivity() }
-
     }
 
 }

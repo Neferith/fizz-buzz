@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.fizzbuzz.R
-import com.fizzbuzz.model.FizzbuzzMeta
+import com.fizzbuzz.model.FizzbuzzEntity
 import com.fizzbuzz.utils.FizzBuzzUtils
 
-class ResultAdapter(private val mItem: FizzbuzzMeta) :
+class ResultAdapter(private val mItem: FizzbuzzEntity) :
     RecyclerView.Adapter<ResultAdapter.ViewHolder>() {
 
     // create new views
@@ -25,8 +25,8 @@ class ResultAdapter(private val mItem: FizzbuzzMeta) :
     // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-      // The fizzbuzz string begin at index 1 (Current position +1)
-        holder.textView.text = FizzBuzzUtils.generateFitBuzzString(position+1,mItem)
+        // The fizzbuzz string begin at index 1 (Current position +1)
+        holder.textView.text = FizzBuzzUtils.generateFitBuzzString(position + 1, mItem)
 
 
     }

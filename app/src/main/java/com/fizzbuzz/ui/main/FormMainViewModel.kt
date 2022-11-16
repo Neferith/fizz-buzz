@@ -23,6 +23,7 @@ class FormMainViewModel : ViewModel() {
         }
     }
 
+    @Throws(FormException::class)
     fun updateInt2(toString: String) {
         try {
             currentItem.int2 = toString.toInt()
@@ -33,6 +34,7 @@ class FormMainViewModel : ViewModel() {
     }
 
 
+    @Throws(FormException::class)
     fun updateLimit(toString: String) {
         try {
             currentItem.limit = toString.toInt()

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/main_fragment">
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.fizzbuzz.ui.main.FormMainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/show_result"
+            app:destination="@id/result_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/result_fragment"
+        android:name="com.fizzbuzz.ui.result.ResultFragment"
+        android:label="item_detail"
+        tools:layout="@layout/fragment_result">
+        <argument
+            android:name="entity"
+            app:argType="com.fizzbuzz.model.FizzbuzzEntity" />
+    </fragment>
+</navigation>

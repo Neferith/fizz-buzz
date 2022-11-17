@@ -7,6 +7,6 @@
     <string name="str2">str2</string>
     <string name="submit">submit</string>
     <string name="result">Result</string>
-
-
+    <string name="title_result_detail">Resultats</string>
+    <string name="form_error">Le champ n\'est pas valide</string>
 </resources>

@@ -9,18 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fizzbuzz.R
-import com.fizzbuzz.model.FizzbuzzEntity
 
 class ResultFragment : Fragment() {
 
     companion object {
-        fun newInstance(entity: FizzbuzzEntity?): ResultFragment {
-            val fragment = ResultFragment()
-            val args = Bundle()
-            args.putParcelable("entity", entity)
-            fragment.arguments = args
-            return fragment
-        }
+        const val ARG_ENTITY = "entity"
     }
 
     private lateinit var viewModel: ResultViewModel
@@ -39,12 +32,11 @@ class ResultFragment : Fragment() {
 
         configureViewModel()
         configureRecyclerView(view)
-
     }
 
     private fun configureViewModel() {
         viewModel = ViewModelProvider(this)[ResultViewModel::class.java]
-        viewModel.init(arguments?.getParcelable("entity"))
+        viewModel.init(arguments?.getParcelable(ARG_ENTITY))
     }
 
     private fun configureRecyclerView(inView: View) {

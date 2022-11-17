@@ -8,7 +8,7 @@ import com.fizzbuzz.model.FizzbuzzEntity
 object FizzBuzzUtils {
 
     fun defaultFitBuzz(): FizzbuzzEntity {
-        return FizzbuzzEntity(3, 5, Int.MAX_VALUE, "fizz", "buzz")
+        return FizzbuzzEntity(3, 5, 100, "fizz", "buzz")
     }
 
     /**

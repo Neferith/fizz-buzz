@@ -26,17 +26,6 @@ class FormMainFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    private fun submitResult() {
-        val bundle = Bundle()
-        bundle.putParcelable(
-            ResultFragment.ARG_ENTITY,
-            viewModel.getCurrentItem()
-        )
-
-        resultFragmentContainer.findNavController()
-            .navigate(R.id.result_fragment, bundle)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -101,7 +90,10 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateInt1(it)
             } catch (e: FormException) {
-                return@configureInput InputValidate(false, e.message)
+                return@configureInput InputValidate(
+                    false,
+                    requireContext().resources.getString(R.string.form_error)
+                )
             }
             return@configureInput InputValidate(true, null)
         }
@@ -114,7 +106,10 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateInt2(it)
             } catch (e: FormException) {
-                return@configureInput InputValidate(false, e.message)
+                return@configureInput InputValidate(
+                    false,
+                    requireContext().resources.getString(R.string.form_error)
+                )
             }
             return@configureInput InputValidate(true, null)
         }
@@ -127,7 +122,10 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateLimit(it)
             } catch (e: FormException) {
-                return@configureInput InputValidate(false, e.message)
+                return@configureInput InputValidate(
+                    false,
+                    requireContext().resources.getString(R.string.form_error)
+                )
             }
             return@configureInput InputValidate(true, null)
         }
@@ -157,4 +155,14 @@ class FormMainFragment : Fragment() {
         submitButton.setOnClickListener { submitResult() }
     }
 
+    private fun submitResult() {
+        val bundle = Bundle()
+        bundle.putParcelable(
+            ResultFragment.ARG_ENTITY,
+            viewModel.getCurrentItem()
+        )
+
+        resultFragmentContainer.findNavController()
+            .navigate(R.id.result_fragment, bundle)
+    }
 }

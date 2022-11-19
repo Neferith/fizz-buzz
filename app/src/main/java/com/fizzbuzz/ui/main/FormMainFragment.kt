@@ -7,16 +7,18 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.fizzbuzz.R
 import com.fizzbuzz.model.FormException
 import com.fizzbuzz.ui.result.ResultFragment
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FormMainFragment : Fragment() {
 
-    private lateinit var viewModel: FormMainViewModel
+    private val viewModel by viewModels<FormMainViewModel>()
     private lateinit var resultFragmentContainer: View
 
     override fun onCreateView(
@@ -43,7 +45,7 @@ class FormMainFragment : Fragment() {
     }
 
     private fun configureViewModel() {
-        viewModel = ViewModelProvider(this)[FormMainViewModel::class.java]
+        //  viewModel = ViewModelProvider(this)[FormMainViewModel::class.java]
     }
 
     private data class InputValidate(
@@ -162,6 +164,7 @@ class FormMainFragment : Fragment() {
             viewModel.getCurrentItem()
         )
 
+        viewModel.submit()
         resultFragmentContainer.findNavController()
             .navigate(R.id.result_fragment, bundle)
     }

@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FIZZBUZZ"
+        android:name=".FizzbuzzApplication"
         tools:targetApi="31">
         <activity
             android:name=".ui.FormMainActivity"

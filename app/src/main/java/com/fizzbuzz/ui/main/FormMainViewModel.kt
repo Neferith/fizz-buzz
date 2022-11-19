@@ -1,14 +1,20 @@
 package com.fizzbuzz.ui.main
 
 import androidx.lifecycle.ViewModel
+import com.fizzbuzz.domain.GetFizzBuzzEntityUseCase
+import com.fizzbuzz.domain.SaveFizzbuzzEntityUseCase
 import com.fizzbuzz.model.FizzbuzzEntity
 import com.fizzbuzz.model.FormException
-import com.fizzbuzz.utils.FizzBuzzUtils
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
+@HiltViewModel
+class FormMainViewModel @Inject constructor(
+    private val saveFizzbuzzEntityUseCase: SaveFizzbuzzEntityUseCase,
+    getFizzbuzzEntityUseCase: GetFizzBuzzEntityUseCase
+) : ViewModel() {
 
-class FormMainViewModel : ViewModel() {
-
-    private val currentItem: FizzbuzzEntity = FizzBuzzUtils.defaultFitBuzz()
+    private val currentItem: FizzbuzzEntity = getFizzbuzzEntityUseCase.invoke()
 
     fun getCurrentItem(): FizzbuzzEntity {
         return currentItem
@@ -30,9 +36,7 @@ class FormMainViewModel : ViewModel() {
         } catch (e: NumberFormatException) {
             throw FormException()
         }
-
     }
-
 
     @Throws(FormException::class)
     fun updateLimit(toString: String) {
@@ -47,8 +51,11 @@ class FormMainViewModel : ViewModel() {
         currentItem.str1 = toString
     }
 
-
     fun updateStr2(toString: String) {
         currentItem.str2 = toString
+    }
+
+    fun submit() {
+        saveFizzbuzzEntityUseCase.invoke(currentItem)
     }
 }

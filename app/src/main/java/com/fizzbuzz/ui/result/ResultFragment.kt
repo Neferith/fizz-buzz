@@ -6,17 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fizzbuzz.R
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ResultFragment : Fragment() {
-
-   /* companion object {
-        const val ARG_ENTITY = "entity"
-    }*/
 
     private lateinit var viewModel: ResultViewModel
     private lateinit var recyclerView: RecyclerView
@@ -50,8 +48,10 @@ class ResultFragment : Fragment() {
         val adapter = ResultAdapter()
         recyclerView.adapter = adapter
 
-        viewModel.fizzBuzzString.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        lifecycleScope.launch {
+            viewModel.listData.collect {
+                adapter.submitData(it)
+            }
         }
     }
 

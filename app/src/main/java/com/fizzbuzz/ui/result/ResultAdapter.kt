@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fizzbuzz.R
 
-class ResultAdapter : ListAdapter<String, ResultAdapter.ViewHolder>(StringDiffCallback) {
+class ResultAdapter : PagingDataAdapter<String, ResultAdapter.ViewHolder>(StringDiffCallback) {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultAdapter.ViewHolder {
@@ -31,7 +31,9 @@ class ResultAdapter : ListAdapter<String, ResultAdapter.ViewHolder>(StringDiffCa
     }
 
     object StringDiffCallback : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean =
+            oldItem == newItem
+
         override fun areContentsTheSame(oldItem: String, newItem: String): Boolean =
             oldItem == newItem
     }

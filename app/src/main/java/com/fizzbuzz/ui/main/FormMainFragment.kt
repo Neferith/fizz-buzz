@@ -1,6 +1,5 @@
 package com.fizzbuzz.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +8,16 @@ import android.widget.Button
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.fizzbuzz.R
 import com.fizzbuzz.model.FormException
-import com.fizzbuzz.ui.ResultActivity
+import com.fizzbuzz.ui.result.ResultFragment
 import com.google.android.material.textfield.TextInputLayout
 
 class FormMainFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = FormMainFragment()
-    }
-
     private lateinit var viewModel: FormMainViewModel
+    private lateinit var resultFragmentContainer: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,31 +26,36 @@ class FormMainFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    private fun goToResultActivity() {
-        activity.let {
-            val intent = Intent(it, ResultActivity::class.java)
-            intent.putExtra("meta", viewModel.getCurrentItem())
-            it?.startActivity(intent)
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        configureFragmentResultContainer(view)
         configureViewModel()
         configureForm(view)
+    }
 
+    private fun configureFragmentResultContainer(view: View) {
+        resultFragmentContainer = if (view.findViewById<View>(R.id.result_nav_container) != null) {
+            view.findViewById(R.id.result_nav_container)
+        } else {
+            view.findViewById(R.id.main)
+        }
     }
 
     private fun configureViewModel() {
         viewModel = ViewModelProvider(this)[FormMainViewModel::class.java]
     }
 
+    private data class InputValidate(
+        val isValidate: Boolean,
+        val message: String?
+    )
+
     private fun configureInput(
         inView: View,
         id: Int,
         defaultValue: String,
-        onChange: (value: String) -> FormException?
+        onChange: (value: String) -> InputValidate
     ) {
 
         val layout = inView.findViewById<TextInputLayout>(id)
@@ -61,15 +63,15 @@ class FormMainFragment : Fragment() {
         int1View?.setText(defaultValue)
 
         int1View?.doOnTextChanged { text, _, _, _ ->
-            val exception = onChange(text.toString())
-            submitError(layout, exception)
+            val result = onChange(text.toString())
+            processInputValidation(layout, result)
         }
 
     }
 
-    private fun submitError(layout: TextInputLayout, exception: FormException?) {
-        if (exception != null) {
-            layout.error = exception.message
+    private fun processInputValidation(layout: TextInputLayout, result: InputValidate) {
+        if (!result.isValidate) {
+            layout.error = result.message
             submitButton.visibility = View.GONE
         } else {
             layout.error = null
@@ -88,9 +90,12 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateInt1(it)
             } catch (e: FormException) {
-                return@configureInput e
+                return@configureInput InputValidate(
+                    false,
+                    requireContext().resources.getString(R.string.form_error)
+                )
             }
-            return@configureInput null
+            return@configureInput InputValidate(true, null)
         }
 
         configureInput(
@@ -101,9 +106,12 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateInt2(it)
             } catch (e: FormException) {
-                return@configureInput e
+                return@configureInput InputValidate(
+                    false,
+                    requireContext().resources.getString(R.string.form_error)
+                )
             }
-            return@configureInput null
+            return@configureInput InputValidate(true, null)
         }
 
         configureInput(
@@ -114,9 +122,12 @@ class FormMainFragment : Fragment() {
             try {
                 viewModel.updateLimit(it)
             } catch (e: FormException) {
-                return@configureInput e
+                return@configureInput InputValidate(
+                    false,
+                    requireContext().resources.getString(R.string.form_error)
+                )
             }
-            return@configureInput null
+            return@configureInput InputValidate(true, null)
         }
 
         configureInput(
@@ -127,7 +138,7 @@ class FormMainFragment : Fragment() {
 
             viewModel.updateStr1(it)
 
-            return@configureInput null
+            return@configureInput InputValidate(true, null)
         }
 
         configureInput(
@@ -138,12 +149,20 @@ class FormMainFragment : Fragment() {
 
             viewModel.updateStr2(it)
 
-            return@configureInput null
+            return@configureInput InputValidate(true, null)
         }
-
         submitButton = inView.findViewById(R.id.submit)
-        submitButton.setOnClickListener { goToResultActivity() }
-
+        submitButton.setOnClickListener { submitResult() }
     }
 
+    private fun submitResult() {
+        val bundle = Bundle()
+        bundle.putParcelable(
+            ResultFragment.ARG_ENTITY,
+            viewModel.getCurrentItem()
+        )
+
+        resultFragmentContainer.findNavController()
+            .navigate(R.id.result_fragment, bundle)
+    }
 }

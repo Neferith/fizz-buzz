@@ -1,16 +1,16 @@
 package com.fizzbuzz.ui.main
 
 import androidx.lifecycle.ViewModel
-import com.fizzbuzz.model.FizzbuzzMeta
+import com.fizzbuzz.model.FizzbuzzEntity
 import com.fizzbuzz.model.FormException
+import com.fizzbuzz.utils.FizzBuzzUtils
 
 
 class FormMainViewModel : ViewModel() {
 
-    private val currentItem: FizzbuzzMeta =
-        FizzbuzzMeta(3,5,100,"fizz","buzz")
+    private val currentItem: FizzbuzzEntity = FizzBuzzUtils.defaultFitBuzz()
 
-    fun getCurrentItem():FizzbuzzMeta {
+    fun getCurrentItem(): FizzbuzzEntity {
         return currentItem
     }
 
@@ -18,26 +18,28 @@ class FormMainViewModel : ViewModel() {
     fun updateInt1(toString: String) {
         try {
             currentItem.int1 = toString.toInt()
-        } catch (e:NumberFormatException) {
-            throw FormException("Le champ n'est pas valide")
+        } catch (e: NumberFormatException) {
+            throw FormException()
         }
     }
 
+    @Throws(FormException::class)
     fun updateInt2(toString: String) {
         try {
             currentItem.int2 = toString.toInt()
-        } catch (e:NumberFormatException) {
-            throw FormException("Le champ n'est pas valide")
+        } catch (e: NumberFormatException) {
+            throw FormException()
         }
 
     }
 
 
+    @Throws(FormException::class)
     fun updateLimit(toString: String) {
         try {
             currentItem.limit = toString.toInt()
-        } catch (e:NumberFormatException) {
-            throw FormException("Le champ n'est pas valide")
+        } catch (e: NumberFormatException) {
+            throw FormException()
         }
     }
 

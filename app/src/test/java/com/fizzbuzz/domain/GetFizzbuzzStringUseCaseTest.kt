@@ -18,7 +18,7 @@ class GetFizzbuzzStringUseCaseTest {
     private var index: Int = 1
     private var entity: FizzbuzzEntity = mockk()
 
-    private var useCase = GetFizzbuzzStringUseCase()
+    private val useCase = GetFizzbuzzStringUseCase()
 
     @Before
     fun setUp() {

@@ -28,11 +28,15 @@ class GetFizzbuzzStringUseCaseTest {
 
     @Test
     fun `cache case`() {
+        // Given
+        val entity = FizzBuzzEntity(limit = 10)
+        
         // When
-        val result = useCase.invoke(index, entity)
-        verify(exactly = 1) { FizzBuzzUtils.generateFitBuzzString(any(), any()) }
+        val result = useCase.invoke(entity)
+        
+        val expectedResult = listOf(1, 2, "fizz", 4, "buzz", "fizz", 7, 8, "fizz", "buzz")
 
         // Then
-        assertThat(result).isEqualTo(FIZZBUZZ_STRING)
+        assertEquals()
     }
 }

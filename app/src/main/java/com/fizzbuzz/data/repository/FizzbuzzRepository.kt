@@ -4,7 +4,7 @@ import com.fizzbuzz.data.storage.FizzbuzzStorage
 import com.fizzbuzz.model.FizzbuzzEntity
 import javax.inject.Inject
 
-class FizzBuzzRepository @Inject
+class FizzbuzzRepository @Inject
 constructor(private val fizzbuzzStorage: FizzbuzzStorage) {
 
     fun getCurrentFizzBuzzEntity(): FizzbuzzEntity {

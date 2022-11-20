@@ -2,8 +2,8 @@ package com.fizzbuzz.di
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.fizzbuzz.data.storage.FizzBuzzStorageImpl
 import com.fizzbuzz.data.storage.FizzbuzzStorage
+import com.fizzbuzz.data.storage.FizzbuzzStorageImpl
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -25,6 +25,6 @@ object LocalDataModule {
     @Singleton
     @Provides
     fun provideStorage(@ApplicationContext appContext: Context, gson: Gson): FizzbuzzStorage {
-        return FizzBuzzStorageImpl(PreferenceManager.getDefaultSharedPreferences(appContext), gson)
+        return FizzbuzzStorageImpl(PreferenceManager.getDefaultSharedPreferences(appContext), gson)
     }
 }

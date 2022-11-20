@@ -1,31 +1,36 @@
 package com.fizzbuzz.ui.result
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.fizzbuzz.domain.GetFizzbuzzStringUseCase
-import com.fizzbuzz.model.FizzbuzzEntity
-import com.fizzbuzz.utils.FizzBuzzUtils
+import androidx.lifecycle.viewModelScope
+import com.fizzbuzz.domain.CoroutineDispatcherProvider
+import com.fizzbuzz.domain.GetFizzbuzzResultUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    private val getFizzBuzzEntityUseCase: GetFizzbuzzStringUseCase
+    private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
+    private val getFizzbuzzResultUseCase: GetFizzbuzzResultUseCase
 ) : ViewModel() {
 
-    var entity: FizzbuzzEntity = FizzBuzzUtils.defaultFitBuzz()
+    private val _fizzBuzzString: MutableLiveData<List<String>> = MutableLiveData()
+    val fizzBuzzString: LiveData<List<String>>
+        get() = _fizzBuzzString
 
-    /**
-     * Method to initialize the parameters, of the view model
-     */
-    fun init(parcelable: FizzbuzzEntity?) {
+    init {
+        viewModelScope.launch(coroutineDispatcherProvider.io) {
 
-        if (parcelable != null) {
-            entity = parcelable
+            getFizzbuzzResultUseCase.invoke().onEach { _fizzBuzzString.value = it }.launchIn(
+                MainScope()
+            )
         }
     }
 
-    fun generateFitBuzzString(i: Int, mItem: FizzbuzzEntity): CharSequence {
-        return getFizzBuzzEntityUseCase.invoke(i, mItem)
-    }
 
 }

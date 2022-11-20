@@ -1,7 +1,7 @@
 package com.fizzbuzz.ui.main
 
 import androidx.lifecycle.ViewModel
-import com.fizzbuzz.domain.GetFizzBuzzEntityUseCase
+import com.fizzbuzz.domain.GetFizzbuzzEntityUseCase
 import com.fizzbuzz.domain.SaveFizzbuzzEntityUseCase
 import com.fizzbuzz.model.FizzbuzzEntity
 import com.fizzbuzz.model.FormException
@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FormMainViewModel @Inject constructor(
     private val saveFizzbuzzEntityUseCase: SaveFizzbuzzEntityUseCase,
-    getFizzbuzzEntityUseCase: GetFizzBuzzEntityUseCase
+    getFizzbuzzEntityUseCase: GetFizzbuzzEntityUseCase
 ) : ViewModel() {
 
     private val currentItem: FizzbuzzEntity = getFizzbuzzEntityUseCase.invoke()

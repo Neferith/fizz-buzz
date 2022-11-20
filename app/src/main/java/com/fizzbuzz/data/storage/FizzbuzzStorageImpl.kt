@@ -2,10 +2,9 @@ package com.fizzbuzz.data.storage
 
 import android.content.SharedPreferences
 import com.fizzbuzz.model.FizzbuzzEntity
-import com.fizzbuzz.utils.FizzBuzzUtils
 import com.google.gson.Gson
 
-class FizzBuzzStorageImpl(
+class FizzbuzzStorageImpl(
 
     private val defaultSharedPreferences: SharedPreferences,
     private val builder: Gson
@@ -25,6 +24,6 @@ class FizzBuzzStorageImpl(
         if (json != null) {
             return builder.fromJson(json, FizzbuzzEntity::class.java)
         }
-        return FizzBuzzUtils.defaultFitBuzz()
+        return FizzbuzzEntity()
     }
 }

@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FIZZBUZZ"
         android:name=".FizzbuzzApplication"
+        android:largeHeap="true"
         tools:targetApi="31">
         <activity
             android:name=".ui.FormMainActivity"

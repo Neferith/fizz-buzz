@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.fizzbuzz.R
 import com.fizzbuzz.model.FormException
-import com.fizzbuzz.ui.result.ResultFragment
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -159,11 +158,8 @@ class FormMainFragment : Fragment() {
 
     private fun submitResult() {
         val bundle = Bundle()
-        bundle.putParcelable(
-            ResultFragment.ARG_ENTITY,
-            viewModel.getCurrentItem()
-        )
 
+        //TODO : Async
         viewModel.submit()
         resultFragmentContainer.findNavController()
             .navigate(R.id.result_fragment, bundle)

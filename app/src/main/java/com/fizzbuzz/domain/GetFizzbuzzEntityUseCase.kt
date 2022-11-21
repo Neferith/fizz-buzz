@@ -8,7 +8,7 @@ class GetFizzbuzzEntityUseCase @Inject
 constructor(private val fizzBuzzRepository: FizzbuzzRepository) {
 
     operator fun invoke(): FizzbuzzEntity {
-        return fizzBuzzRepository.getCurrentFizzBuzzEntity()
+        return fizzBuzzRepository.loadCurrentFizzBuzzEntity()
     }
 
 }

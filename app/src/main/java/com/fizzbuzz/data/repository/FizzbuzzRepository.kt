@@ -7,11 +7,11 @@ import javax.inject.Inject
 class FizzbuzzRepository @Inject
 constructor(private val fizzbuzzStorage: FizzbuzzStorage) {
 
-    fun getCurrentFizzBuzzEntity(): FizzbuzzEntity {
+    fun loadCurrentFizzBuzzEntity(): FizzbuzzEntity {
         return fizzbuzzStorage.loadEntity()
     }
 
-    fun setCurrentFizzBuzzEntity(entity: FizzbuzzEntity) {
+    fun saveCurrentFizzBuzzEntity(entity: FizzbuzzEntity) {
         return fizzbuzzStorage.saveEntity(entity)
     }
 

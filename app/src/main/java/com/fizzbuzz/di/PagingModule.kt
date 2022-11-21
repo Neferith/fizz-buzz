@@ -21,7 +21,7 @@ object PagingModule {
     @Provides
     fun providePager(repository: FizzbuzzRepository, config: PagingConfig): Pager<Int, String> {
         return Pager(config) {
-            FizzbuzzPagingSource(repository.getCurrentFizzBuzzEntity(), repository)
+            FizzbuzzPagingSource(repository.loadCurrentFizzBuzzEntity(), repository)
         }
     }
 }

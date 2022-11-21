@@ -31,7 +31,6 @@ class FormMainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configureFragmentResultContainer(view)
-        configureViewModel()
         configureForm(view)
     }
 
@@ -41,10 +40,6 @@ class FormMainFragment : Fragment() {
         } else {
             view.findViewById(R.id.main)
         }
-    }
-
-    private fun configureViewModel() {
-        //  viewModel = ViewModelProvider(this)[FormMainViewModel::class.java]
     }
 
     private data class InputValidate(

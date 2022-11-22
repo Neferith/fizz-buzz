@@ -24,15 +24,15 @@ object PagingModule {
     fun providePagingSource(
         repository: FizzbuzzRepository,
         useCase: GetFizzbuzzStringUseCase
-    ): PagingSource<Int, String> {
+    ): PagingSource<Long, String> {
         return FizzbuzzPagingSource(repository.loadCurrentFizzBuzzEntity(), useCase)
     }
 
     @Provides
     fun providePager(
-        pagingSource: PagingSource<Int, String>,
+        pagingSource: PagingSource<Long, String>,
         config: PagingConfig
-    ): Pager<Int, String> {
+    ): Pager<Long, String> {
         return Pager(config) {
             pagingSource
         }

@@ -11,9 +11,9 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FizzbuzzEntity(
-    var int1: Int = 3,
-    var int2: Int = 5,
-    var limit: Int = Int.MAX_VALUE,
+    var int1: Long = 3,
+    var int2: Long = 5,
+    var limit: Long = Long.MAX_VALUE,
     var str1: String = "fizz",
     var str2: String = "buzz"
 ) : Parcelable

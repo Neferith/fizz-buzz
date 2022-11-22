@@ -20,28 +20,18 @@ class FormMainViewModel @Inject constructor(
         return currentItem
     }
 
-    fun updateInt1(value: Int) {
-
+    fun updateInt1(value: Long) {
         currentItem.int1 = value
-
     }
 
     @Throws(FormException::class)
-    fun updateInt2(value: Int) {
-        try {
-            currentItem.int2 = value
-        } catch (e: NumberFormatException) {
-            throw FormException()
-        }
+    fun updateInt2(value: Long) {
+        currentItem.int2 = value
     }
 
     @Throws(FormException::class)
-    fun updateLimit(value: Int) {
-        try {
-            currentItem.limit = value
-        } catch (e: NumberFormatException) {
-            throw FormException()
-        }
+    fun updateLimit(value: Long) {
+        currentItem.limit = value
     }
 
     fun updateStr1(value: String) {
@@ -52,7 +42,6 @@ class FormMainViewModel @Inject constructor(
         currentItem.str2 = value
     }
 
-    fun submit() {
-        saveFizzbuzzEntityUseCase.invoke(currentItem)
-    }
+    fun submit() = saveFizzbuzzEntityUseCase.invoke(currentItem)
+
 }

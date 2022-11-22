@@ -13,12 +13,13 @@ import com.fizzbuzz.R
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 
-fun CharSequence?.castToInt(): Int = if (this != null && this.isNotEmpty()) Integer.parseInt(
-    this,
-    0,
-    this.lastIndex + 1,
-    10
-) else throw NumberFormatException()
+fun CharSequence?.castToLong(): Long =
+    if (this != null && this.isNotEmpty()) java.lang.Long.parseLong(
+        this,
+        0,
+        this.lastIndex + 1,
+        10
+    ) else throw NumberFormatException()
 
 @AndroidEntryPoint
 class FormMainFragment : Fragment() {
@@ -70,11 +71,11 @@ class FormMainFragment : Fragment() {
         }
     }
 
-    private fun configureInputInt(
+    private fun configureInputLong(
         inView: View,
         id: Int,
-        defaultValue: Int,
-        onChange: (value: Int) -> Unit
+        defaultValue: Long,
+        onChange: (value: Long) -> Unit
     ) {
 
         val layout = inView.findViewById<TextInputLayout>(id)
@@ -82,7 +83,7 @@ class FormMainFragment : Fragment() {
         input?.setText(defaultValue.toString())
         input?.doOnTextChanged { text, _, _, _ ->
             try {
-                onChange(text.castToInt())
+                onChange(text.castToLong())
                 processInputValidation(
                     layout,
                     InputValidate(true, null)
@@ -112,55 +113,36 @@ class FormMainFragment : Fragment() {
     private lateinit var submitButton: Button
     private fun configureForm(inView: View) {
 
-        configureInputInt(
+        configureInputLong(
             inView,
             R.id.textInputLayoutInt1,
             viewModel.getCurrentItem().int1
-        ) {
+        ) { viewModel.updateInt1(it) }
 
-            viewModel.updateInt1(it)
-
-        }
-
-        configureInputInt(
+        configureInputLong(
             inView,
             R.id.textInputLayoutInt2,
             viewModel.getCurrentItem().int2
-        ) {
+        ) { viewModel.updateInt2(it) }
 
-            viewModel.updateInt2(it)
-
-        }
-
-        configureInputInt(
+        configureInputLong(
             inView,
             R.id.textInputLayoutLimit,
             viewModel.getCurrentItem().limit
-        ) {
-
-            viewModel.updateLimit(it)
-
-        }
+        ) { viewModel.updateLimit(it) }
 
         configureInputString(
             inView,
             R.id.textInputLayoutStr1,
             viewModel.getCurrentItem().str1
-        ) {
-
-            viewModel.updateStr1(it)
-
-        }
+        ) { viewModel.updateStr1(it) }
 
         configureInputString(
             inView,
             R.id.textInputLayoutStr2,
             viewModel.getCurrentItem().str2
-        ) {
+        ) { viewModel.updateStr2(it) }
 
-            viewModel.updateStr2(it)
-
-        }
         submitButton = inView.findViewById(R.id.submit)
         submitButton.setOnClickListener { submitResult() }
     }
@@ -168,7 +150,6 @@ class FormMainFragment : Fragment() {
     private fun submitResult() {
         val bundle = Bundle()
 
-        //TODO : Async
         viewModel.submit()
         resultFragmentContainer.findNavController()
             .navigate(R.id.result_fragment, bundle)

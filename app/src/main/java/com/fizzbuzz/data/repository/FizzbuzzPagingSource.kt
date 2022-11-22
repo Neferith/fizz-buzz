@@ -2,13 +2,17 @@ package com.fizzbuzz.data.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.fizzbuzz.domain.GetFizzbuzzStringUseCase
 import com.fizzbuzz.model.FizzbuzzEntity
 import javax.inject.Inject
+
+
+fun Int.maximize(limit: Int): Int = if (this < limit) this else limit
 
 class FizzbuzzPagingSource @Inject
 constructor(
     val entity: FizzbuzzEntity,
-    val fizzbuzzRepository: FizzbuzzRepository
+    private val getFizzbuzzStringUseCase: GetFizzbuzzStringUseCase
 ) :
     PagingSource<Int, String>() {
 
@@ -22,10 +26,11 @@ constructor(
         val res: ArrayList<String> = ArrayList()
         val prevKey = if (currentLoadingPageKey == 0) null else currentLoadingPageKey - 1
 
-
-        return if ((1 + (currentLoadingPageKey) * PAGE_SIZE) < entity.limit) {
-            for (index in 1 + currentLoadingPageKey * PAGE_SIZE..(currentLoadingPageKey * PAGE_SIZE + PAGE_SIZE)) {
-                res.add(fizzbuzzRepository.generateFitBuzzString(index, entity))
+        val currentIndex = (1 + (currentLoadingPageKey) * PAGE_SIZE)
+        return if (currentIndex < entity.limit) {
+            val lastIndex = (currentLoadingPageKey * PAGE_SIZE + PAGE_SIZE).maximize(entity.limit)
+            for (index in currentIndex..lastIndex) {
+                res.add(getFizzbuzzStringUseCase.invoke(index, entity))
             }
             LoadResult.Page(
                 data = res,

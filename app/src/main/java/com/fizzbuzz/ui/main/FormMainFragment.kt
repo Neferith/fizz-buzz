@@ -10,9 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.fizzbuzz.R
-import com.fizzbuzz.model.FormException
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
+
+fun CharSequence?.castToInt(): Int = if (this != null && this.isNotEmpty()) Integer.parseInt(
+    this,
+    0,
+    this.lastIndex + 1,
+    10
+) else throw NumberFormatException()
 
 @AndroidEntryPoint
 class FormMainFragment : Fragment() {
@@ -47,22 +53,50 @@ class FormMainFragment : Fragment() {
         val message: String?
     )
 
-    private fun configureInput(
+    private fun configureInputString(
         inView: View,
         id: Int,
         defaultValue: String,
-        onChange: (value: String) -> InputValidate
+        onChange: (value: String) -> Unit
     ) {
 
         val layout = inView.findViewById<TextInputLayout>(id)
-        val int1View = layout.editText
-        int1View?.setText(defaultValue)
+        val input = layout.editText
+        input?.setText(defaultValue)
 
-        int1View?.doOnTextChanged { text, _, _, _ ->
-            val result = onChange(text.toString())
-            processInputValidation(layout, result)
+        input?.doOnTextChanged { text, _, _, _ ->
+            onChange(text.toString())
+            processInputValidation(layout, InputValidate(true, null))
         }
+    }
 
+    private fun configureInputInt(
+        inView: View,
+        id: Int,
+        defaultValue: Int,
+        onChange: (value: Int) -> Unit
+    ) {
+
+        val layout = inView.findViewById<TextInputLayout>(id)
+        val input = layout.editText
+        input?.setText(defaultValue.toString())
+        input?.doOnTextChanged { text, _, _, _ ->
+            try {
+                onChange(text.castToInt())
+                processInputValidation(
+                    layout,
+                    InputValidate(true, null)
+                )
+            } catch (e: NumberFormatException) {
+                processInputValidation(
+                    layout,
+                    InputValidate(
+                        false,
+                        requireContext().resources.getString(R.string.form_error)
+                    )
+                )
+            }
+        }
     }
 
     private fun processInputValidation(layout: TextInputLayout, result: InputValidate) {
@@ -78,55 +112,37 @@ class FormMainFragment : Fragment() {
     private lateinit var submitButton: Button
     private fun configureForm(inView: View) {
 
-        configureInput(
+        configureInputInt(
             inView,
             R.id.textInputLayoutInt1,
-            viewModel.getCurrentItem().int1.toString()
+            viewModel.getCurrentItem().int1
         ) {
-            try {
-                viewModel.updateInt1(it)
-            } catch (e: FormException) {
-                return@configureInput InputValidate(
-                    false,
-                    requireContext().resources.getString(R.string.form_error)
-                )
-            }
-            return@configureInput InputValidate(true, null)
+
+            viewModel.updateInt1(it)
+
         }
 
-        configureInput(
+        configureInputInt(
             inView,
             R.id.textInputLayoutInt2,
-            viewModel.getCurrentItem().int2.toString()
+            viewModel.getCurrentItem().int2
         ) {
-            try {
-                viewModel.updateInt2(it)
-            } catch (e: FormException) {
-                return@configureInput InputValidate(
-                    false,
-                    requireContext().resources.getString(R.string.form_error)
-                )
-            }
-            return@configureInput InputValidate(true, null)
+
+            viewModel.updateInt2(it)
+
         }
 
-        configureInput(
+        configureInputInt(
             inView,
             R.id.textInputLayoutLimit,
-            viewModel.getCurrentItem().limit.toString()
+            viewModel.getCurrentItem().limit
         ) {
-            try {
-                viewModel.updateLimit(it)
-            } catch (e: FormException) {
-                return@configureInput InputValidate(
-                    false,
-                    requireContext().resources.getString(R.string.form_error)
-                )
-            }
-            return@configureInput InputValidate(true, null)
+
+            viewModel.updateLimit(it)
+
         }
 
-        configureInput(
+        configureInputString(
             inView,
             R.id.textInputLayoutStr1,
             viewModel.getCurrentItem().str1
@@ -134,10 +150,9 @@ class FormMainFragment : Fragment() {
 
             viewModel.updateStr1(it)
 
-            return@configureInput InputValidate(true, null)
         }
 
-        configureInput(
+        configureInputString(
             inView,
             R.id.textInputLayoutStr2,
             viewModel.getCurrentItem().str2
@@ -145,7 +160,6 @@ class FormMainFragment : Fragment() {
 
             viewModel.updateStr2(it)
 
-            return@configureInput InputValidate(true, null)
         }
         submitButton = inView.findViewById(R.id.submit)
         submitButton.setOnClickListener { submitResult() }

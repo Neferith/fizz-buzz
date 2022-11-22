@@ -20,39 +20,36 @@ class FormMainViewModel @Inject constructor(
         return currentItem
     }
 
+    fun updateInt1(value: Int) {
+
+        currentItem.int1 = value
+
+    }
+
     @Throws(FormException::class)
-    fun updateInt1(toString: String) {
+    fun updateInt2(value: Int) {
         try {
-            currentItem.int1 = toString.toInt()
+            currentItem.int2 = value
         } catch (e: NumberFormatException) {
             throw FormException()
         }
     }
 
     @Throws(FormException::class)
-    fun updateInt2(toString: String) {
+    fun updateLimit(value: Int) {
         try {
-            currentItem.int2 = toString.toInt()
+            currentItem.limit = value
         } catch (e: NumberFormatException) {
             throw FormException()
         }
     }
 
-    @Throws(FormException::class)
-    fun updateLimit(toString: String) {
-        try {
-            currentItem.limit = toString.toInt()
-        } catch (e: NumberFormatException) {
-            throw FormException()
-        }
+    fun updateStr1(value: String) {
+        currentItem.str1 = value
     }
 
-    fun updateStr1(toString: String) {
-        currentItem.str1 = toString
-    }
-
-    fun updateStr2(toString: String) {
-        currentItem.str2 = toString
+    fun updateStr2(value: String) {
+        currentItem.str2 = value
     }
 
     fun submit() {

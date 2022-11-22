@@ -2,8 +2,10 @@ package com.fizzbuzz.di
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingSource
 import com.fizzbuzz.data.repository.FizzbuzzPagingSource
 import com.fizzbuzz.data.repository.FizzbuzzRepository
+import com.fizzbuzz.domain.GetFizzbuzzStringUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,9 +21,20 @@ object PagingModule {
     }
 
     @Provides
-    fun providePager(repository: FizzbuzzRepository, config: PagingConfig): Pager<Int, String> {
+    fun providePagingSource(
+        repository: FizzbuzzRepository,
+        useCase: GetFizzbuzzStringUseCase
+    ): PagingSource<Int, String> {
+        return FizzbuzzPagingSource(repository.loadCurrentFizzBuzzEntity(), useCase)
+    }
+
+    @Provides
+    fun providePager(
+        pagingSource: PagingSource<Int, String>,
+        config: PagingConfig
+    ): Pager<Int, String> {
         return Pager(config) {
-            FizzbuzzPagingSource(repository.loadCurrentFizzBuzzEntity(), repository)
+            pagingSource
         }
     }
 }

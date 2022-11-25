@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fizzbuzz.R
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ResultFragment : Fragment() {
-
-    companion object {
-        const val ARG_ENTITY = "entity"
-    }
 
     private lateinit var viewModel: ResultViewModel
     private lateinit var recyclerView: RecyclerView
@@ -32,11 +32,12 @@ class ResultFragment : Fragment() {
 
         configureViewModel()
         configureRecyclerView(view)
+
+
     }
 
     private fun configureViewModel() {
         viewModel = ViewModelProvider(this)[ResultViewModel::class.java]
-        viewModel.init(arguments?.getParcelable(ARG_ENTITY))
     }
 
     private fun configureRecyclerView(inView: View) {
@@ -44,7 +45,14 @@ class ResultFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = ResultAdapter(viewModel.entity)
+        val adapter = ResultAdapter()
+        recyclerView.adapter = adapter
+
+        lifecycleScope.launch {
+            viewModel.listData.collect {
+                adapter.submitData(it)
+            }
+        }
     }
 
 }

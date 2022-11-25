@@ -4,16 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.fizzbuzz.R
-import com.fizzbuzz.model.FizzbuzzEntity
-import com.fizzbuzz.utils.FizzBuzzUtils
 
-class ResultAdapter(private val mItem: FizzbuzzEntity) :
-    RecyclerView.Adapter<ResultAdapter.ViewHolder>() {
+class ResultAdapter : PagingDataAdapter<String, ResultAdapter.ViewHolder>(StringDiffCallback) {
 
     // create new views
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultAdapter.ViewHolder {
         // inflates the card_view_design view
         // that is used to hold list item
         val view = LayoutInflater.from(parent.context)
@@ -22,22 +21,20 @@ class ResultAdapter(private val mItem: FizzbuzzEntity) :
         return ViewHolder(view)
     }
 
-    // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        // The fizzbuzz string begin at index 1 (Current position +1)
-        holder.textView.text = FizzBuzzUtils.generateFitBuzzString(position + 1, mItem)
-
-
-    }
-
-    // return the number of the items in the list
-    override fun getItemCount(): Int {
-        return mItem.limit
+        holder.textView.text = getItem(position)
     }
 
     // Holds the views for adding it to image and text
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+    inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val textView: TextView = itemView.findViewById(R.id.tv_recycler_view_item)
+    }
+
+    object StringDiffCallback : DiffUtil.ItemCallback<String>() {
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean =
+            oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean =
+            oldItem == newItem
     }
 }

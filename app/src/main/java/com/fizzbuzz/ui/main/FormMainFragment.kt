@@ -7,16 +7,24 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.fizzbuzz.R
-import com.fizzbuzz.model.FormException
-import com.fizzbuzz.ui.result.ResultFragment
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+fun CharSequence?.castToLong(): Long =
+    if (this != null && this.isNotEmpty()) java.lang.Long.parseLong(
+        this,
+        0,
+        this.lastIndex + 1,
+        10
+    ) else throw NumberFormatException()
+
+@AndroidEntryPoint
 class FormMainFragment : Fragment() {
 
-    private lateinit var viewModel: FormMainViewModel
+    private val viewModel by viewModels<FormMainViewModel>()
     private lateinit var resultFragmentContainer: View
 
     override fun onCreateView(
@@ -30,7 +38,6 @@ class FormMainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configureFragmentResultContainer(view)
-        configureViewModel()
         configureForm(view)
     }
 
@@ -42,31 +49,55 @@ class FormMainFragment : Fragment() {
         }
     }
 
-    private fun configureViewModel() {
-        viewModel = ViewModelProvider(this)[FormMainViewModel::class.java]
-    }
-
     private data class InputValidate(
         val isValidate: Boolean,
         val message: String?
     )
 
-    private fun configureInput(
+    private fun configureInputString(
         inView: View,
         id: Int,
         defaultValue: String,
-        onChange: (value: String) -> InputValidate
+        onChange: (value: String) -> Unit
     ) {
 
         val layout = inView.findViewById<TextInputLayout>(id)
-        val int1View = layout.editText
-        int1View?.setText(defaultValue)
+        val input = layout.editText
+        input?.setText(defaultValue)
 
-        int1View?.doOnTextChanged { text, _, _, _ ->
-            val result = onChange(text.toString())
-            processInputValidation(layout, result)
+        input?.doOnTextChanged { text, _, _, _ ->
+            onChange(text.toString())
+            processInputValidation(layout, InputValidate(true, null))
         }
+    }
 
+    private fun configureInputLong(
+        inView: View,
+        id: Int,
+        defaultValue: Long,
+        onChange: (value: Long) -> Unit
+    ) {
+
+        val layout = inView.findViewById<TextInputLayout>(id)
+        val input = layout.editText
+        input?.setText(defaultValue.toString())
+        input?.doOnTextChanged { text, _, _, _ ->
+            try {
+                onChange(text.castToLong())
+                processInputValidation(
+                    layout,
+                    InputValidate(true, null)
+                )
+            } catch (e: NumberFormatException) {
+                processInputValidation(
+                    layout,
+                    InputValidate(
+                        false,
+                        requireContext().resources.getString(R.string.form_error)
+                    )
+                )
+            }
+        }
     }
 
     private fun processInputValidation(layout: TextInputLayout, result: InputValidate) {
@@ -82,86 +113,44 @@ class FormMainFragment : Fragment() {
     private lateinit var submitButton: Button
     private fun configureForm(inView: View) {
 
-        configureInput(
+        configureInputLong(
             inView,
             R.id.textInputLayoutInt1,
-            viewModel.getCurrentItem().int1.toString()
-        ) {
-            try {
-                viewModel.updateInt1(it)
-            } catch (e: FormException) {
-                return@configureInput InputValidate(
-                    false,
-                    requireContext().resources.getString(R.string.form_error)
-                )
-            }
-            return@configureInput InputValidate(true, null)
-        }
+            viewModel.getCurrentItem().int1
+        ) { viewModel.updateInt1(it) }
 
-        configureInput(
+        configureInputLong(
             inView,
             R.id.textInputLayoutInt2,
-            viewModel.getCurrentItem().int2.toString()
-        ) {
-            try {
-                viewModel.updateInt2(it)
-            } catch (e: FormException) {
-                return@configureInput InputValidate(
-                    false,
-                    requireContext().resources.getString(R.string.form_error)
-                )
-            }
-            return@configureInput InputValidate(true, null)
-        }
+            viewModel.getCurrentItem().int2
+        ) { viewModel.updateInt2(it) }
 
-        configureInput(
+        configureInputLong(
             inView,
             R.id.textInputLayoutLimit,
-            viewModel.getCurrentItem().limit.toString()
-        ) {
-            try {
-                viewModel.updateLimit(it)
-            } catch (e: FormException) {
-                return@configureInput InputValidate(
-                    false,
-                    requireContext().resources.getString(R.string.form_error)
-                )
-            }
-            return@configureInput InputValidate(true, null)
-        }
+            viewModel.getCurrentItem().limit
+        ) { viewModel.updateLimit(it) }
 
-        configureInput(
+        configureInputString(
             inView,
             R.id.textInputLayoutStr1,
             viewModel.getCurrentItem().str1
-        ) {
+        ) { viewModel.updateStr1(it) }
 
-            viewModel.updateStr1(it)
-
-            return@configureInput InputValidate(true, null)
-        }
-
-        configureInput(
+        configureInputString(
             inView,
             R.id.textInputLayoutStr2,
             viewModel.getCurrentItem().str2
-        ) {
+        ) { viewModel.updateStr2(it) }
 
-            viewModel.updateStr2(it)
-
-            return@configureInput InputValidate(true, null)
-        }
         submitButton = inView.findViewById(R.id.submit)
         submitButton.setOnClickListener { submitResult() }
     }
 
     private fun submitResult() {
         val bundle = Bundle()
-        bundle.putParcelable(
-            ResultFragment.ARG_ENTITY,
-            viewModel.getCurrentItem()
-        )
 
+        viewModel.submit()
         resultFragmentContainer.findNavController()
             .navigate(R.id.result_fragment, bundle)
     }

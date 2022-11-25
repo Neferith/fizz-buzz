@@ -1,11 +1,27 @@
 package com.fizzbuzz.domain
 
 import com.fizzbuzz.model.FizzbuzzEntity
-import com.fizzbuzz.utils.FizzBuzzUtils
+import javax.inject.Inject
 
-class GetFizzbuzzStringUseCase {
+class GetFizzbuzzStringUseCase @Inject
+constructor() {
 
-    operator fun invoke(index: Int, entity: FizzbuzzEntity): String {
-        return FizzBuzzUtils.generateFitBuzzString(index, entity)
+    /**
+     * Generate fizzbuzz string of an index
+     * @param index the index position in the list.
+     * @property item the fizzbuzz parameters.
+     * @return The fizzbuzz string
+     */
+    fun invoke(index: Long, item: FizzbuzzEntity): String {
+        var str = ""
+        // All multiples of int1 are replaced by str1
+        if (index % item.int1 == 0.toLong()) {
+            str += item.str1
+        }
+        // All multiples of int2 are replaced by str2
+        if (index % item.int2 == 0.toLong()) {
+            str += item.str2
+        }
+        return str.ifEmpty { index.toString() }
     }
 }
